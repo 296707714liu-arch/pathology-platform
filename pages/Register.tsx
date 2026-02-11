@@ -84,18 +84,18 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
           <div className="z-10">
             <div className="flex items-center gap-3 mb-8">
               <div className="bg-white p-2 rounded-xl">
-                <span className="text-2D5CF7 text-3xl">🧬</span>
+                <span style={{fontSize: '24px'}}>🧬</span>
               </div>
               <span className="text-2xl font-bold tracking-tight">智医科研平台</span>
             </div>
             <h2 className="text-4xl font-bold leading-tight mb-6">加入全球医学<br/>科研社区</h2>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="text-xl">✓</span>
+                <span style={{fontSize: '20px'}}>✓</span>
                 <span className="text-sm font-medium">国家级临床数据安全认证</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xl">👥</span>
+                <span style={{fontSize: '20px'}}>👥</span>
                 <span className="text-sm font-medium">服务超过 10,000+ 顶尖医疗专家</span>
               </div>
             </div>
@@ -123,7 +123,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">姓名</label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>👤</span>
                 <input
                   type="text"
                   value={formData.name}
@@ -139,13 +139,13 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">邮箱地址</label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">mail</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>✉️</span>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300"
-                  placeholder="请输入邮箱地址"
+                  placeholder="请输入执业邮箱"
                   required
                 />
               </div>
@@ -155,7 +155,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">身份</label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">badge</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🎓</span>
                 <select
                   value={formData.role}
                   onChange={(e) => handleInputChange('role', e.target.value as 'student' | 'teacher' | 'researcher')}
@@ -173,7 +173,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">所属机构</label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">domain</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🏢</span>
                 <input
                   type="text"
                   value={formData.institution}
@@ -188,7 +188,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">密码</label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🔒</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
@@ -202,7 +202,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2D5CF7]"
                 >
-                  <span className="material-symbols-outlined text-[20px]">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                  <span style={{fontSize: '20px'}}>{showPassword ? '👁️' : '👁️‍🗨️'}</span>
                 </button>
               </div>
             </div>
@@ -211,7 +211,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">确认密码</label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🔒</span>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
@@ -225,21 +225,21 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2D5CF7]"
                 >
-                  <span className="material-symbols-outlined text-[20px]">{showConfirmPassword ? 'visibility_off' : 'visibility'}</span>
+                  <span style={{fontSize: '20px'}}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</span>
                 </button>
               </div>
             </div>
 
             {/* Security Notice */}
             <div className="flex items-center gap-3 p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
-              <span className="material-symbols-outlined text-[#2D5CF7]">shield_with_heart</span>
+              <span style={{fontSize: '20px'}}>🛡️</span>
               <p className="text-xs text-slate-600">已启用双重验证。您的数据受行业标准 AES-256 加密保护。</p>
             </div>
 
             {/* Error Message */}
             {error && (
               <div className="flex items-center gap-3 p-4 bg-red-50/50 rounded-2xl border border-red-100">
-                <span className="material-symbols-outlined text-red-600">error</span>
+                <span style={{fontSize: '20px'}}>⚠️</span>
                 <p className="text-xs text-red-600">{error}</p>
               </div>
             )}
@@ -258,7 +258,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
               ) : (
                 <>
                   <span>立即注册</span>
-                  <span className="material-symbols-outlined">person_add</span>
+                  <span>➕</span>
                 </>
               )}
             </button>
