@@ -1259,28 +1259,34 @@ app.use('*', (req, res) => {
 
 // 启动服务器
 async function startServer() {
+  let dbConnected = false;
+  let dbInitialized = false;
+
   try {
-    // 测试数据库连接
-    const dbConnected = await testConnection();
+    // 测试数据库连接（不强制退出）
+    dbConnected = await testConnection();
     if (!dbConnected) {
-      console.error('❌ 数据库连接失败，服务器启动中止');
-      process.exit(1);
+      console.warn('⚠️  数据库连接失败，将以降级模式运行（仅提供API代理功能）');
+    } else {
+      // 初始化数据库表
+      dbInitialized = await initializeDatabase();
+      if (!dbInitialized) {
+        console.warn('⚠️  数据库初始化失败，某些功能可能不可用');
+      }
     }
+  } catch (error) {
+    console.warn('⚠️  数据库初始化异常:', error.message);
+  }
 
-    // 初始化数据库表
-    const dbInitialized = await initializeDatabase();
-    if (!dbInitialized) {
-      console.error('❌ 数据库初始化失败，服务器启动中止');
-      process.exit(1);
-    }
-
-    // 启动HTTP服务器
-    app.listen(PORT, () => {
-      console.log(`🚀 服务器运行在 http://localhost:${PORT}`);
-      console.log(`🌐 前端URL: ${process.env.FRONTEND_URL}`);
-      console.log(`📊 数据库: ${process.env.DB_NAME}`);
-      console.log('');
-      console.log('🚀 完整功能服务器启动成功！');
+  // 无论数据库是否连接，都启动HTTP服务器
+  app.listen(PORT, () => {
+    console.log(`🚀 服务器运行在 http://localhost:${PORT}`);
+    console.log(`🌐 前端URL: ${process.env.FRONTEND_URL}`);
+    console.log(`📊 数据库: ${process.env.DB_NAME}`);
+    console.log('');
+    
+    if (dbConnected && dbInitialized) {
+      console.log('✅ 完整功能服务器启动成功！');
       console.log('');
       console.log('📋 可用的API端点:');
       console.log('- GET  /api/health - 健康检查');
@@ -1302,11 +1308,23 @@ async function startServer() {
       console.log('- ✅ 文件上传和下载');
       console.log('- ✅ 用户活动记录');
       console.log('- ✅ 角色权限控制');
-    });
-  } catch (error) {
-    console.error('❌ 服务器启动失败:', error);
-    process.exit(1);
-  }
+    } else {
+      console.log('⚠️  降级模式启动 - 数据库不可用');
+      console.log('');
+      console.log('📋 可用的API端点:');
+      console.log('- GET  /api/health - 健康检查');
+      console.log('- POST /api/tripo3d/task - Tripo3D 任务创建');
+      console.log('- GET  /api/tripo3d/task/:taskId - Tripo3D 任务查询');
+      console.log('- GET  /api/tripo3d/user/balance - Tripo3D 余额查询');
+      console.log('');
+      console.log('⚠️  以下功能暂时不可用:');
+      console.log('- 用户认证和授权');
+      console.log('- 资源上传和下载');
+      console.log('- 用户活动记录');
+      console.log('');
+      console.log('💡 请检查数据库配置并重启服务器');
+    }
+  });
 }
 
 startServer();
