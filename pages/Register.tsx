@@ -68,7 +68,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
               <div className="bg-white p-2 rounded-xl">
                 <span style={{fontSize: '24px'}}>🧬</span>
               </div>
-              <span className="text-xl md:text-2xl font-bold tracking-tight">大模型病理平台</span>
+              <span className="text-xl md:text-2xl font-bold tracking-tight">大模型病理教学平台</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-6">探索病理<br/>从这里开始</h2>
             <div className="space-y-4">
@@ -93,7 +93,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
         <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">创建账号</h1>
-            <p className="text-slate-500 text-sm">加入大模型病理学习平台</p>
+            <p className="text-slate-500 text-sm">加入大模型病理教学平台</p>
           </div>
 
           <div className="flex border-b border-slate-100 mb-8">

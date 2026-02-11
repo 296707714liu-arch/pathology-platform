@@ -57,7 +57,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSwitchToRegister }) => {
               <div className="bg-white p-2 rounded-xl">
                 <span style={{fontSize: '24px'}}>🧬</span>
               </div>
-              <span className="text-xl md:text-2xl font-bold tracking-tight">大模型病理平台</span>
+              <span className="text-xl md:text-2xl font-bold tracking-tight">大模型病理教学平台</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-6">探索病理<br/>从这里开始</h2>
             <div className="space-y-4">
