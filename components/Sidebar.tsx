@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   LayoutDashboard,
   Microscope,
@@ -10,9 +10,7 @@ import {
   LogOut,
   User,
   Settings,
-  BrainCircuit,
-  Search,
-  ChevronRight
+  BrainCircuit
 } from 'lucide-react';
 import { AppView, User as UserType } from '../types';
 
@@ -26,16 +24,13 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, setIsOpen, user, onLogout }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  
   const baseMenuItems = [
-    { id: AppView.DASHBOARD, label: '探索首页', icon: LayoutDashboard },
+    { id: AppView.DASHBOARD, label: '综合首页', icon: LayoutDashboard },
     { id: AppView.SLIDE_ANALYSIS, label: 'AI 阅片室', icon: Microscope },
-    { id: AppView.QUANTIFICATION, label: '细胞计数', icon: Eye },
-    { id: AppView.RESEARCH_ASSISTANT, label: '学术/科研', icon: BookOpen },
-    { id: AppView.ANATOMY, label: '3D 解剖', icon: Activity },
-    { id: AppView.COLLAB_LIBRARY, label: '协同资源库', icon: Users },
+    { id: AppView.ANATOMY, label: '3D 解剖模拟', icon: Activity },
     { id: AppView.EXAM_SYSTEM, label: '考试中心', icon: GraduationCap },
+    { id: AppView.RESEARCH_ASSISTANT, label: '学术/科研', icon: BookOpen },
+    { id: AppView.COLLAB_LIBRARY, label: '协同资源库', icon: Users },
   ];
 
   const adminMenuItems = [
@@ -59,38 +54,24 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         flex flex-col h-full
       `}>
-        <div className="h-full bg-gradient-to-b from-blue-600 to-blue-700 flex flex-col overflow-hidden">
+        <div className="h-full bg-white flex flex-col overflow-hidden">
           
           {/* Logo */}
-          <div className="p-6 border-b border-blue-500/30">
+          <div className="p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center text-white backdrop-blur-sm">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
                 <BrainCircuit className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="font-bold text-sm text-white">智医AI诊疗</h1>
-                <p className="text-xs text-blue-100 tracking-wider">MEDICAL AI CORE</p>
+                <h1 className="font-bold text-sm text-gray-900">大模型病理</h1>
+                <p className="text-xs text-gray-500 tracking-wider">INTELLIGENT PATHOLOGY</p>
               </div>
-            </div>
-          </div>
-
-          {/* 搜索框 */}
-          <div className="px-4 py-4 border-b border-blue-500/30">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-100" size={18} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="快速搜索..."
-                className="w-full bg-white/10 border border-white/20 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-all backdrop-blur-sm"
-              />
             </div>
           </div>
 
           {/* 导航菜单 */}
           <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-            <p className="text-xs font-bold text-blue-100 uppercase tracking-widest px-3 mb-4 opacity-70">
+            <p className="text-xs font-bold text-gray-700 uppercase tracking-widest px-3 mb-4">
               核心功能
             </p>
             {baseMenuItems.map((item) => {
@@ -105,8 +86,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${
                     isActive
-                      ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
-                      : 'text-blue-100 hover:bg-white/10'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   <Icon size={20} />
@@ -116,7 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
             })}
             {user && user.role === 'admin' && (
               <>
-                <p className="text-xs font-bold text-blue-100 uppercase tracking-widest px-3 mt-8 mb-4 opacity-70">
+                <p className="text-xs font-bold text-gray-700 uppercase tracking-widest px-3 mt-8 mb-4">
                   系统管理
                 </p>
                 {adminMenuItems.map((item) => {
@@ -131,8 +112,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${
                         isActive
-                          ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
-                          : 'text-blue-100 hover:bg-white/10'
+                          ? 'bg-blue-600 text-white'
+                          : 'text-gray-700 hover:bg-gray-100'
                       }`}
                     >
                       <Icon size={20} />
@@ -143,25 +124,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
               </>
             )}
           </nav>
-
-          {/* 用户信息 */}
-          <div className="p-4 border-t border-blue-500/30">
-            <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 cursor-pointer transition-colors group">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white flex-shrink-0 backdrop-blur-sm">
-                <User size={24} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate">Admin 系统管理员</p>
-                <p className="text-xs text-blue-100 truncate">超级管理权限</p>
-              </div>
-              <button
-                onClick={onLogout}
-                className="text-blue-100 hover:text-white transition-colors"
-              >
-                <LogOut size={18} />
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </>
