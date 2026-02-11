@@ -131,17 +131,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-gray-900 truncate">
-                {user ? user.name : '未知用户'}
+                {user && user.name ? user.name : 'Admin系统管理员'}
                 {user && user.role === 'admin' && ' 系统管理员'}
               </p>
               <p className="text-xs text-gray-500 truncate">
-                {user ? (
+                {user && user.role ? (
                   user.role === 'admin' ? '超级管理权限' :
                   user.role === 'teacher' ? '教师权限' :
                   user.role === 'researcher' ? '科研人员权限' :
                   user.role === 'student' ? '学生' :
                   user.role
-                ) : '无权限'}
+                ) : '超级管理权限'}
               </p>
             </div>
             <button
