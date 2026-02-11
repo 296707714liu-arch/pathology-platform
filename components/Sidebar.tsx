@@ -4,21 +4,16 @@ import {
   Microscope,
   BookOpen,
   GraduationCap,
-  X,
   Eye,
   Activity,
-  BarChart3,
-  Database,
   Users,
   LogOut,
   User,
   Settings,
-  Sun,
-  Moon,
+  X,
   Menu
 } from 'lucide-react';
 import { AppView, User as UserType } from '../types';
-import { useTheme } from '../context/ThemeContext';
 
 interface SidebarProps {
   currentView: AppView;
@@ -30,8 +25,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, setIsOpen, user, onLogout }) => {
-  // 使用主题上下文
-  const { theme, toggleTheme } = useTheme();
   
   const baseMenuItems = [
     { id: AppView.DASHBOARD, label: '探索首页', icon: LayoutDashboard },
@@ -43,20 +36,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
     { id: AppView.EXAM_SYSTEM, label: '考试中心', icon: GraduationCap },
   ];
 
-  // 管理员菜单项
   const adminMenuItems = [
     { id: AppView.USER_MANAGEMENT, label: '用户管理', icon: Settings },
   ];
 
-  // 个人菜单项
-  const personalMenuItems = [
-    { id: AppView.USER_PROFILE, label: '个人中心', icon: User },
-  ];
-
-  // 根据用户角色决定显示的菜单项
-  let menuItems = [...baseMenuItems, ...personalMenuItems];
+  let menuItems = [...baseMenuItems];
   if (user && user.role === 'admin') {
-    menuItems = [...baseMenuItems, ...adminMenuItems, ...personalMenuItems];
+    menuItems = [...baseMenuItems, ...adminMenuItems];
   }
 
   return (
@@ -67,32 +53,30 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
       />
 
       <div className={`
-        fixed inset-y-0 left-0 z-30 w-72 transform transition-transform duration-300 ease-out lg:translate-x-0 lg:static lg:inset-auto lg:block lg:relative
+        fixed inset-y-0 left-0 z-30 w-56 transform transition-transform duration-300 ease-out lg:translate-x-0 lg:static lg:inset-auto lg:block lg:relative
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        p-0 flex flex-col h-full
+        flex flex-col h-full
       `}>
-        <div className="h-full bg-white border border-gray-200 shadow-sm flex flex-col overflow-hidden p-4">
+        <div className="h-full bg-white border-r border-slate-200 flex flex-col overflow-hidden">
           
-          <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100">
+          {/* Logo */}
+          <div className="p-6 border-b border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-                <Activity className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                <Activity className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-lg font-semibold text-gray-900">
-                  智能AI病理
-                </span>
-                <span className="block text-[10px] text-gray-500 font-medium tracking-wider uppercase">科研教学平台</span>
+                <h1 className="font-bold text-sm text-slate-900">智医AI诊疗</h1>
+                <p className="text-xs text-slate-400 tracking-wider">MEDICAL AI CORE</p>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => setIsOpen(false)} className="lg:hidden text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors p-2">
-                <X className="w-5 h-5" />
-              </button>
             </div>
           </div>
 
-          <nav className="p-4 space-y-1 flex-1 overflow-y-auto scrollbar-hide">
+          {/* 导航菜单 */}
+          <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest px-3 mb-4">
+              核心功能
+            </p>
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentView === item.id;
@@ -103,57 +87,35 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
                     onChangeView(item.id);
                     setIsOpen(false);
                   }}
-                  className={`relative flex items-center w-full px-3 py-2.5 rounded-lg transition-all duration-200 ${isActive ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-white' : 'text-gray-400'}`} />
-                  <span className="font-medium text-sm">{item.label}</span>
+                  <Icon size={20} />
+                  <span>{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          <div className="p-4 space-y-3 border-t border-gray-100">
-            {/* User Info */}
-            {user && (
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-900">{user.name}</h4>
-                      <p className="text-xs text-gray-500">
-                        {user.role === 'student' ? '学生' : user.role === 'teacher' ? '教师' : '研究员'}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={onLogout}
-                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
-                    title="退出登录"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </div>
-                {user.institution && (
-                  <p className="text-xs text-gray-400 mt-2 truncate">{user.institution}</p>
-                )}
+          {/* 用户信息 */}
+          <div className="p-4 border-t border-slate-100">
+            <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group">
+              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0">
+                <User size={24} />
               </div>
-            )}
-
-            {/* AI Status */}
-            <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
-              <div>
-                <h4 className="text-xs font-medium text-gray-600 mb-1 flex items-center">
-                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                  AI 状态正常
-                </h4>
-                <p className="text-[10px] text-gray-400 font-medium">
-                  AI 助手
-                  <span className="block mt-1 text-gray-500">状态: 正常</span>
-                </p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-slate-900 truncate">Admin 系统管理员</p>
+                <p className="text-xs text-slate-400 truncate">超级管理权限</p>
               </div>
+              <button
+                onClick={onLogout}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <LogOut size={18} />
+              </button>
             </div>
           </div>
         </div>
