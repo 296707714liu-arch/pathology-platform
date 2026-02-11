@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
             <p className="text-xs font-bold text-blue-100 uppercase tracking-widest px-3 mb-4 opacity-70">
               核心功能
             </p>
-            {menuItems.map((item) => {
+            {baseMenuItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentView === item.id;
               return (
@@ -114,6 +114,34 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, isOpen, se
                 </button>
               );
             })}
+            {user && user.role === 'admin' && (
+              <>
+                <p className="text-xs font-bold text-blue-100 uppercase tracking-widest px-3 mt-8 mb-4 opacity-70">
+                  系统管理
+                </p>
+                {adminMenuItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = currentView === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        onChangeView(item.id);
+                        setIsOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-medium ${
+                        isActive
+                          ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
+                          : 'text-blue-100 hover:bg-white/10'
+                      }`}
+                    >
+                      <Icon size={20} />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </>
+            )}
           </nav>
 
           {/* 用户信息 */}
