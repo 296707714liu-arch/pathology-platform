@@ -88,22 +88,22 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
               </div>
               <span className="text-2xl font-bold tracking-tight">智医科研平台</span>
             </div>
-            <h2 className="text-4xl font-bold leading-tight mb-6">AI驱动的病理<br/>科研教学平台</h2>
+            <h2 className="text-4xl font-bold leading-tight mb-6">探索病理<br/>从这里开始</h2>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <span style={{fontSize: '20px'}}>✓</span>
-                <span className="text-sm font-medium">智能病理分析与诊断</span>
+                <span className="text-sm font-medium">基于大模型的病理分析</span>
               </div>
               <div className="flex items-center gap-3">
                 <span style={{fontSize: '20px'}}>👥</span>
-                <span className="text-sm font-medium">为医学教育与科研赋能</span>
+                <span className="text-sm font-medium">为学生和教师提供学习平台</span>
               </div>
             </div>
           </div>
 
             <div className="z-10 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-              <p className="text-xs font-medium text-white/80 mb-2 uppercase tracking-widest">平台特色</p>
-              <p className="text-sm leading-relaxed">集AI分析、病理教学、科研协作于一体，助力医学专业人士提升诊疗水平。</p>
+              <p className="text-xs font-medium text-white/80 mb-2 uppercase tracking-widest">关于平台</p>
+              <p className="text-sm leading-relaxed">一个为病理学习而生的平台，结合大模型技术，让病理教学更直观、更有趣。</p>
             </div>
         </div>
 
