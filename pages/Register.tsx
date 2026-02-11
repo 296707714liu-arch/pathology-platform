@@ -49,36 +49,18 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
   };
 
   return (
-    <div className="light min-h-screen flex items-center justify-center p-4 font-sans antialiased text-slate-700" style={{
+    <div className="min-h-screen w-full flex items-center justify-center p-4" style={{
       backgroundColor: '#F5F7FA',
       backgroundImage: `
         radial-gradient(at 0% 0%, rgba(45, 92, 247, 0.03) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(39, 194, 76, 0.03) 0px, transparent 50%)
-      `,
-      minHeight: '100vh'
+      `
     }}>
-      <style>{`
-        .dna-pattern {
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          opacity: 0.03;
-          pointer-events: none;
-          background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232D5CF7' fill-opacity='1'%3E%3Cpath d='M40 40c0-11 9-20 20-20s20 9 20 20-9 20-20 20-20-9-20-20zm-40 0c0-11 9-20 20-20s20 9 20 20-9 20-20 20-20-9-20-20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .login-card {
-          box-shadow: 0 20px 40px rgba(45, 92, 247, 0.08);
-        }
-        .tab-active {
-          color: #2D5CF7;
-          border-bottom: 2px solid #2D5CF7;
-        }
-      `}</style>
-
-      <div className="dna-pattern"></div>
-
-      <div className="relative w-full max-w-[1000px] flex flex-col md:flex-row bg-white rounded-[2rem] overflow-hidden login-card">
+      <div className="w-full max-w-[1000px] flex flex-col md:flex-row bg-white rounded-[2rem] overflow-hidden" style={{
+        boxShadow: '0 20px 40px rgba(45, 92, 247, 0.08)'
+      }}>
         {/* Left Side - Brand */}
-        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#2D5CF7] to-[#1a41c7] p-12 text-white flex-col justify-between relative overflow-hidden">
+        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#2D5CF7] to-[#1a41c7] p-8 md:p-12 text-white flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
           
           <div className="z-10">
@@ -86,9 +68,9 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
               <div className="bg-white p-2 rounded-xl">
                 <span style={{fontSize: '24px'}}>🧬</span>
               </div>
-              <span className="text-2xl font-bold tracking-tight">智医科研平台</span>
+              <span className="text-xl md:text-2xl font-bold tracking-tight">大模型病理平台</span>
             </div>
-            <h2 className="text-4xl font-bold leading-tight mb-6">探索病理<br/>从这里开始</h2>
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight mb-6">探索病理<br/>从这里开始</h2>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <span style={{fontSize: '20px'}}>✓</span>
@@ -101,21 +83,21 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             </div>
           </div>
 
-            <div className="z-10 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-              <p className="text-xs font-medium text-white/80 mb-2 uppercase tracking-widest">关于平台</p>
-              <p className="text-sm leading-relaxed">一个为病理学习而生的平台，结合大模型技术，让病理教学更直观、更有趣。</p>
-            </div>
+          <div className="z-10 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
+            <p className="text-xs font-medium text-white/80 mb-2 uppercase tracking-widest">关于平台</p>
+            <p className="text-sm leading-relaxed">一个为病理学习而生的平台，结合大模型技术，让病理教学更直观、更有趣。</p>
+          </div>
         </div>
 
         {/* Right Side - Form */}
-        <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">创建账号</h1>
-            <p className="text-slate-500 text-sm">加入智能AI病理科研教学平台</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">创建账号</h1>
+            <p className="text-slate-500 text-sm">加入大模型病理学习平台</p>
           </div>
 
           <div className="flex border-b border-slate-100 mb-8">
-            <div className="flex-1 py-3 text-sm font-bold tab-active text-center">账号注册</div>
+            <div className="flex-1 py-3 text-sm font-bold text-center" style={{color: '#2D5CF7', borderBottom: '2px solid #2D5CF7'}}>账号注册</div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -123,12 +105,12 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">姓名</label>
               <div className="relative">
-                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>👤</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px'}}>👤</span>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2D5CF7]"
                   placeholder="请输入姓名"
                   required
                 />
@@ -139,13 +121,13 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">邮箱地址</label>
               <div className="relative">
-                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>✉️</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px'}}>✉️</span>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300"
-                  placeholder="请输入执业邮箱"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2D5CF7]"
+                  placeholder="请输入邮箱地址"
                   required
                 />
               </div>
@@ -155,11 +137,11 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">身份</label>
               <div className="relative">
-                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🎓</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px'}}>🎓</span>
                 <select
                   value={formData.role}
                   onChange={(e) => handleInputChange('role', e.target.value as 'student' | 'teacher' | 'researcher')}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl transition-all text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#2D5CF7]"
                   required
                 >
                   <option value="student">学生</option>
@@ -173,12 +155,12 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">所属机构</label>
               <div className="relative">
-                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🏢</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px'}}>🏢</span>
                 <input
                   type="text"
                   value={formData.institution}
                   onChange={(e) => handleInputChange('institution', e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2D5CF7]"
                   placeholder="请输入所属机构（可选）"
                 />
               </div>
@@ -188,21 +170,21 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">密码</label>
               <div className="relative">
-                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🔒</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px'}}>🔒</span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className="w-full pl-12 pr-12 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300"
+                  className="w-full pl-12 pr-12 py-4 bg-slate-50 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2D5CF7]"
                   placeholder="请输入登录密码"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2D5CF7]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2D5CF7] text-xl"
                 >
-                  <span style={{fontSize: '20px'}}>{showPassword ? '👁️' : '👁️‍🗨️'}</span>
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
             </div>
@@ -211,21 +193,21 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">确认密码</label>
               <div className="relative">
-                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#cbd5e1'}}>🔒</span>
+                <span style={{position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px'}}>🔒</span>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                  className="w-full pl-12 pr-12 py-4 bg-slate-50 border-transparent focus:border-[#2D5CF7] focus:ring-0 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300"
+                  className="w-full pl-12 pr-12 py-4 bg-slate-50 rounded-2xl transition-all text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2D5CF7]"
                   placeholder="请再次输入密码"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2D5CF7]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2D5CF7] text-xl"
                 >
-                  <span style={{fontSize: '20px'}}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</span>
+                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
             </div>
@@ -248,7 +230,8 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#2D5CF7] hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#2D5CF7] hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{boxShadow: '0 10px 25px rgba(45, 92, 247, 0.2)'}}
             >
               {isLoading ? (
                 <>
@@ -258,25 +241,25 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
               ) : (
                 <>
                   <span>立即注册</span>
-                  <span>➕</span>
+                  <span style={{fontSize: '18px'}}>➕</span>
                 </>
               )}
             </button>
           </form>
 
           <div className="mt-10 text-center">
-            <p className="text-sm text-slate-500">已有账号？ <button onClick={onSwitchToLogin} className="text-[#FF9800] font-bold hover:underline ml-1">立即登录</button></p>
+            <p className="text-sm text-slate-500">已有账号？ <button onClick={onSwitchToLogin} className="text-[#FF9800] font-bold hover:underline">立即登录</button></p>
           </div>
         </div>
       </div>
 
-      <div className="fixed bottom-6 w-full text-center px-4">
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-[11px] font-medium text-slate-400">
-          <a className="hover:text-[#2D5CF7] transition-colors" href="#">平台隐私协议</a>
-          <a className="hover:text-[#2D5CF7] transition-colors" href="#">科研伦理准则</a>
-          <a className="hover:text-[#2D5CF7] transition-colors" href="#">技术支持专线</a>
+      <div className="fixed bottom-4 md:bottom-6 w-full text-center px-4">
+        <div className="flex flex-wrap justify-center gap-x-4 md:gap-x-6 gap-y-2 text-[10px] md:text-[11px] font-medium text-slate-400">
+          <a className="hover:text-[#2D5CF7] transition-colors" href="#">隐私协议</a>
+          <a className="hover:text-[#2D5CF7] transition-colors" href="#">使用条款</a>
+          <a className="hover:text-[#2D5CF7] transition-colors" href="#">技术支持</a>
           <span className="hidden md:inline">|</span>
-          <span className="uppercase tracking-widest text-[10px]">© 2024 Smart Medical Research Systems</span>
+          <span className="uppercase tracking-widest text-[9px] md:text-[10px]">© 2024 Pathology Platform</span>
         </div>
       </div>
     </div>
