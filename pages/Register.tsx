@@ -212,12 +212,6 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
               </div>
             </div>
 
-            {/* Security Notice */}
-            <div className="flex items-center gap-3 p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
-              <span style={{fontSize: '20px'}}>🛡️</span>
-              <p className="text-xs text-slate-600">已启用双重验证。您的数据受行业标准 AES-256 加密保护。</p>
-            </div>
-
             {/* Error Message */}
             {error && (
               <div className="flex items-center gap-3 p-4 bg-red-50/50 rounded-2xl border border-red-100">
