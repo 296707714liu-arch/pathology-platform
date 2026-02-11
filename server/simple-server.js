@@ -10,8 +10,8 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-// 强制使用固定端口，避免被环境变量覆盖导致端口冲突
-const PORT = 3007;
+// 使用环境变量端口，Zeabur 会自动分配
+const PORT = process.env.PORT || 3001;
 
 // 中间件
 const corsOptions = {
