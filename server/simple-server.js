@@ -16,12 +16,8 @@ const PORT = process.env.PORT || 3001;
 // 中间件
 const corsOptions = {
   origin: function (origin, callback) {
-    // 允许所有 localhost 请求
-    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    // 允许所有来源（开发环境）
+    callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
