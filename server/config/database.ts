@@ -24,17 +24,23 @@ export const pool = mysql.createPool({
   timeout: 60000
 });
 
-// 测试数据库连接
-export const testConnection = async () => {
-  try {
-    const connection = await pool.getConnection();
-    console.log('✅ 数据库连接成功');
-    connection.release();
-    return true;
-  } catch (error) {
-    console.error('❌ 数据库连接失败:', error);
-    return false;
+// 测试数据库连接（带重试逻辑）
+export const testConnection = async (maxRetries = 5, delayMs = 3000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const connection = await pool.getConnection();
+      console.log('✅ 数据库连接成功');
+      connection.release();
+      return true;
+    } catch (error) {
+      console.error(`❌ 数据库连接失败 (尝试 ${attempt}/${maxRetries}):`, error);
+      if (attempt < maxRetries) {
+        console.log(`⏳ ${delayMs / 1000} 秒后重试...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
   }
+  return false;
 };
 
 // 创建默认管理员账号
