@@ -1,0 +1,5 @@
+{
+  "name": "智能AI病理科研教学平台",
+  "description": "A comprehensive AI-powered platform for pathology education and research. Features histological slide analysis, automated segmentation & quantification, literature search with grounding, and clinical case generation.",
+  "requestFramePermissions": []
+}
