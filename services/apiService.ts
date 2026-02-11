@@ -1,6 +1,6 @@
 import { User, LoginCredentials, RegisterData, UserStats, UserActivity, Resource, CreateResourceData, ExamRecord } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3007/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pathology-backend-api.zeabur.app/api';
 
 // 添加全局 fetch 拦截
 const originalFetch = window.fetch;
