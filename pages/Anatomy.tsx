@@ -78,28 +78,32 @@ const Anatomy: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-slate-50 flex">
       {/* Left Sidebar - Controls */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center mb-2">
-            <Activity className="w-6 h-6 text-gray-700 mr-3" />
-            <h1 className="text-xl font-semibold text-gray-900">3D 解剖室</h1>
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-cyan-500 flex items-center justify-center">
+              <Activity className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">3D 解剖室</h1>
+              <p className="text-xs text-slate-500">AI 生成专业医学 3D 模型</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-600">AI 生成专业医学 3D 模型</p>
         </div>
 
         {/* Preset Models */}
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-sm font-medium text-gray-900 mb-4">预设模型</h3>
+        <div className="p-6 border-b border-slate-100">
+          <h3 className="text-sm font-medium text-slate-900 mb-4">预设模型</h3>
           <div className="space-y-2">
             {PRESET_PROMPTS.map((preset, index) => (
               <button
                 key={index}
                 onClick={() => handleGenerate(preset.prompt, preset.label)}
                 disabled={isGenerating}
-                className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
                 {preset.label}
               </button>
@@ -108,19 +112,19 @@ const Anatomy: React.FC = () => {
         </div>
 
         {/* Custom Input */}
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-sm font-medium text-gray-900 mb-4">自定义模型</h3>
+        <div className="p-6 border-b border-slate-100">
+          <h3 className="text-sm font-medium text-slate-900 mb-4">自定义模型</h3>
           <div className="space-y-3">
             <textarea
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
               placeholder="描述您想要的解剖结构..."
-              className="w-full h-20 px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+              className="w-full h-20 px-3 py-2 border border-slate-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
             />
             <button
               onClick={handleCustomGenerate}
               disabled={!userPrompt.trim() || isGenerating}
-              className="w-full py-2.5 px-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+              className="w-full py-2.5 px-4 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
             >
               {isGenerating ? (
                 <>
@@ -139,37 +143,37 @@ const Anatomy: React.FC = () => {
 
         {/* Generation Status */}
         {isGenerating && (
-          <div className="p-6 border-b border-gray-100">
+          <div className="p-6 border-b border-slate-100">
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">生成进度</span>
-                <span className="text-gray-900 font-medium">{progress}%</span>
+                <span className="text-slate-600">生成进度</span>
+                <span className="text-slate-900 font-medium">{progress}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-slate-200 rounded-full h-2">
                 <div 
-                  className="bg-gray-900 h-2 rounded-full transition-all duration-300"
+                  className="bg-cyan-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-xs text-gray-600">{status}</p>
+              <p className="text-xs text-slate-600">{status}</p>
             </div>
           </div>
         )}
 
         {/* Error Display */}
         {error && (
-          <div className="p-6 border-b border-gray-100">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
-              <AlertCircle className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+          <div className="p-6 border-b border-slate-100">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
               <p className="text-sm text-red-700">{error}</p>
             </div>
           </div>
         )}
 
         {/* Tips */}
-        <div className="p-6 flex-1">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">使用提示</h3>
-          <div className="space-y-2 text-xs text-gray-600">
+        <div className="p-6 flex-1 overflow-y-auto">
+          <h3 className="text-sm font-medium text-slate-900 mb-3">使用提示</h3>
+          <div className="space-y-2 text-xs text-slate-600">
             <p>• 描述要尽可能详细和准确</p>
             <p>• 生成时间约 2-5 分钟</p>
             <p>• 支持拖拽旋转和缩放</p>
@@ -179,35 +183,33 @@ const Anatomy: React.FC = () => {
       </div>
 
       {/* Right Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-slate-50">
         {/* Content Header */}
-        <div className="p-6 bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">3D 模型查看器</h2>
-              <p className="text-sm text-gray-600">
-                {modelTitle ? `当前模型: ${modelTitle}` : '选择或生成模型开始查看'}
-              </p>
+        <div className="p-6 bg-white border-b border-slate-200">
+          <h2 className="text-lg font-bold text-slate-900">3D 模型查看器</h2>
+          <p className="text-sm text-slate-600 mt-1">
+            {modelTitle ? `当前模型: ${modelTitle}` : '选择或生成模型开始查看'}
+          </p>
+          {modelUrl && (
+            <div className="flex items-center text-sm text-green-600 mt-2">
+              <Sparkles className="w-4 h-4 mr-1" />
+              模型已就绪
             </div>
-            {modelUrl && (
-              <div className="flex items-center text-sm text-green-600">
-                <Sparkles className="w-4 h-4 mr-1" />
-                模型已就绪
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 bg-gray-100">
+        <div className="flex-1 bg-slate-100">
           {modelUrl ? (
             <Anatomy3D modelUrl={modelUrl} title={modelTitle} />
           ) : (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <Activity className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">等待生成</h3>
-                <p className="text-gray-600">选择预设模型或输入自定义描述开始生成</p>
+                <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center mx-auto mb-4">
+                  <Activity className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">等待生成</h3>
+                <p className="text-slate-600">选择预设模型或输入自定义描述开始生成</p>
               </div>
             </div>
           )}

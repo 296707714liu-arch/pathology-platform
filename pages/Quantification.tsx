@@ -74,36 +74,40 @@ const Quantification: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-slate-50 flex">
       {/* 左侧控制面板 (320px) */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
         {/* 页面标题 */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center mb-2">
-            <Layers className="w-6 h-6 text-gray-700 mr-3" />
-            <h1 className="text-xl font-semibold text-gray-900">细胞计数</h1>
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center">
+              <Eye className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">自动细胞计数</h1>
+              <p className="text-xs text-slate-500">AI 视觉识别与计数</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-600">AI 智能组织量化分析</p>
         </div>
 
         {/* 功能控制 */}
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-sm font-medium text-gray-900 mb-4">上传图片</h3>
+        <div className="p-6 border-b border-slate-100">
+          <h3 className="text-sm font-medium text-slate-900 mb-4">上传图片</h3>
           
           {!image ? (
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors"
+              className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-purple-400 hover:bg-purple-50 transition-colors"
             >
-              <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-600 mb-1">点击上传图片</p>
-              <p className="text-xs text-gray-400">支持组织切片、细胞图像</p>
+              <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+              <p className="text-sm text-slate-600 mb-1">点击上传图片</p>
+              <p className="text-xs text-slate-500">支持组织切片、细胞图像</p>
               <input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
             </div>
           ) : (
             <div className="space-y-3">
               <div className="relative">
-                <img src={image} alt="Uploaded tissue" className="w-full h-32 object-cover rounded-lg" />
+                <img src={image} alt="Uploaded tissue" className="w-full h-32 object-cover rounded-lg border border-slate-200" />
                 <button 
                   onClick={() => {
                     setImage(null);
@@ -111,7 +115,7 @@ const Quantification: React.FC = () => {
                     setError(null);
                     if (fileInputRef.current) fileInputRef.current.value = '';
                   }}
-                  className="absolute top-2 right-2 w-6 h-6 bg-gray-900 text-white rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors"
+                  className="absolute top-2 right-2 w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -120,7 +124,7 @@ const Quantification: React.FC = () => {
               <button
                 onClick={handleAnalyze}
                 disabled={!image || isAnalyzing}
-                className="w-full py-2.5 px-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
               >
                 {isAnalyzing ? (
                   <>
@@ -140,18 +144,18 @@ const Quantification: React.FC = () => {
 
         {/* 状态显示 */}
         {error && (
-          <div className="p-6 border-b border-gray-100">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
-              <AlertCircle className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+          <div className="p-6 border-b border-slate-100">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
               <p className="text-sm text-red-700">{error}</p>
             </div>
           </div>
         )}
 
         {/* 使用提示 */}
-        <div className="p-6 flex-1">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">分析说明</h3>
-          <div className="space-y-2 text-xs text-gray-600">
+        <div className="p-6 flex-1 overflow-y-auto">
+          <h3 className="text-sm font-medium text-slate-900 mb-3">分析说明</h3>
+          <div className="space-y-2 text-xs text-slate-600">
             <p>• 支持 H&E 染色组织切片</p>
             <p>• 自动识别细胞核和细胞质</p>
             <p>• 计算细胞密度和分布</p>
@@ -161,29 +165,23 @@ const Quantification: React.FC = () => {
       </div>
 
       {/* 右侧主内容区域 (自适应宽度) */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-slate-50">
         {/* 内容标题栏 */}
-        <div className="p-6 bg-white border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">
-                量化结果
-              </h2>
-              <p className="text-sm text-gray-600">
-                组织量化分析数据
-              </p>
-            </div>
-          </div>
+        <div className="p-6 bg-white border-b border-slate-200">
+          <h2 className="text-lg font-bold text-slate-900">量化结果</h2>
+          <p className="text-sm text-slate-600 mt-1">组织量化分析数据</p>
         </div>
 
         {/* 主要内容区域 */}
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 overflow-y-auto p-6">
           {!result && !isAnalyzing && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <PieChart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">等待分析</h3>
-                <p className="text-gray-600">请上传组织图片开始量化分析</p>
+                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                  <PieChart className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">等待分析</h3>
+                <p className="text-slate-600">请上传组织图片开始量化分析</p>
               </div>
             </div>
           )}
@@ -191,9 +189,9 @@ const Quantification: React.FC = () => {
           {isAnalyzing && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <Loader2 className="w-16 h-16 text-gray-400 mx-auto mb-4 animate-spin" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">AI 分析中</h3>
-                <p className="text-gray-600">正在进行组织量化...</p>
+                <div className="w-16 h-16 rounded-full border-4 border-slate-200 border-t-purple-600 animate-spin mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">AI 分析中</h3>
+                <p className="text-slate-600">正在进行组织量化...</p>
               </div>
             </div>
           )}

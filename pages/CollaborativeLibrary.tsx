@@ -9,12 +9,12 @@ interface CollaborativeLibraryProps {
 
 // 定义资源类别
 const RESOURCE_CATEGORIES = [
-  { id: 'slide', label: '切片', icon: FileText, color: 'from-blue-500 to-blue-600' },
-  { id: 'case', label: '病例', icon: BookOpen, color: 'from-green-500 to-green-600' },
-  { id: 'assignment', label: '作业', icon: FileCode, color: 'from-purple-500 to-purple-600' },
-  { id: 'document', label: '课件', icon: Briefcase, color: 'from-orange-500 to-orange-600' },
-  { id: 'video', label: '视频', icon: FileText, color: 'from-red-500 to-red-600' },
-  { id: 'other', label: '其他', icon: FileText, color: 'from-slate-500 to-slate-600' }
+  { id: 'slide', label: '切片', icon: FileText, color: 'bg-blue-100 text-blue-600' },
+  { id: 'case', label: '病例', icon: BookOpen, color: 'bg-green-100 text-green-600' },
+  { id: 'assignment', label: '作业', icon: FileCode, color: 'bg-purple-100 text-purple-600' },
+  { id: 'document', label: '课件', icon: Briefcase, color: 'bg-orange-100 text-orange-600' },
+  { id: 'video', label: '视频', icon: FileText, color: 'bg-red-100 text-red-600' },
+  { id: 'other', label: '其他', icon: FileText, color: 'bg-slate-100 text-slate-600' }
 ];
 
 const CollaborativeLibrary: React.FC<CollaborativeLibraryProps> = ({ user }) => {
@@ -128,22 +128,26 @@ const CollaborativeLibrary: React.FC<CollaborativeLibraryProps> = ({ user }) => 
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-slate-50 flex">
       {/* Left Sidebar - Controls */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
         {/* Page Header */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center mb-2">
-            <Users className="w-6 h-6 text-gray-700 mr-3" />
-            <h1 className="text-xl font-semibold text-gray-900">协同资源库</h1>
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">协同资源库</h1>
+              <p className="text-xs text-slate-500">师生共建 · 实时协作</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-600">师生共建 · 实时协作 · 资源共享</p>
         </div>
 
         {/* Category Selection */}
         {!selectedCategory ? (
-          <div className="flex-1 p-6">
-            <h3 className="text-sm font-medium text-gray-900 mb-4">选择文件夹</h3>
+          <div className="flex-1 p-6 overflow-y-auto">
+            <h3 className="text-sm font-medium text-slate-900 mb-4">选择文件夹</h3>
             <div className="space-y-2">
               {RESOURCE_CATEGORIES.map((category) => {
                 const Icon = category.icon;

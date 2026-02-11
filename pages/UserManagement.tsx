@@ -141,17 +141,17 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
   // 权限检查 - 非管理员显示错误信息
   if (!hasAccess) {
     return (
-      <div className="h-screen bg-gray-50 flex items-center justify-center">
+      <div className="h-screen bg-slate-50 flex items-center justify-center">
         <div className="max-w-md w-full">
-          <div className="bg-white border border-red-200 rounded-lg p-8 shadow-lg">
+          <div className="bg-white border border-red-200 rounded-2xl p-8 shadow-lg">
             <div className="flex items-center justify-center mb-4">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                 <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
             </div>
-            <h2 className="text-xl font-bold text-gray-900 text-center mb-2">权限不足</h2>
-            <p className="text-gray-600 text-center">只有管理员才能访问用户管理功能。</p>
-            <p className="text-gray-500 text-sm text-center mt-4">
+            <h2 className="text-xl font-bold text-slate-900 text-center mb-2">权限不足</h2>
+            <p className="text-slate-600 text-center">只有管理员才能访问用户管理功能。</p>
+            <p className="text-slate-500 text-sm text-center mt-4">
               当前用户角色：{currentUser?.role ? (currentUser.role === 'student' ? '学生' : currentUser.role === 'teacher' ? '教师' : currentUser.role === 'researcher' ? '研究员' : currentUser.role) : '未知'}
             </p>
           </div>
@@ -163,10 +163,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
   // 加载中
   if (loading) {
     return (
-      <div className="h-screen bg-gray-50 flex items-center justify-center">
+      <div className="h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">加载用户列表中...</p>
+          <div className="w-12 h-12 rounded-full border-4 border-slate-200 border-t-slate-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 font-medium">加载用户列表中...</p>
         </div>
       </div>
     );
@@ -175,16 +175,16 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
   // 错误显示
   if (error) {
     return (
-      <div className="h-screen bg-gray-50 flex items-center justify-center">
+      <div className="h-screen bg-slate-50 flex items-center justify-center">
         <div className="max-w-md w-full">
-          <div className="bg-white border border-red-200 rounded-lg p-8 shadow-lg">
+          <div className="bg-white border border-red-200 rounded-2xl p-8 shadow-lg">
             <div className="flex items-center justify-center mb-4">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                 <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
             </div>
-            <h2 className="text-xl font-bold text-gray-900 text-center mb-2">错误</h2>
-            <p className="text-gray-600 text-center">{error}</p>
+            <h2 className="text-xl font-bold text-slate-900 text-center mb-2">错误</h2>
+            <p className="text-slate-600 text-center">{error}</p>
           </div>
         </div>
       </div>
@@ -192,32 +192,36 @@ const UserManagement: React.FC<UserManagementProps> = ({ currentUser }) => {
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-slate-50 flex">
       {/* Left Sidebar - Controls */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
         {/* Page Header */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center mb-2">
-            <Users className="w-6 h-6 text-gray-700 mr-3" />
-            <h1 className="text-xl font-semibold text-gray-900">用户管理</h1>
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-slate-500 flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">用户管理</h1>
+              <p className="text-xs text-slate-500">查看和管理平台用户</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-600">查看和管理平台用户信息</p>
         </div>
 
         {/* Statistics */}
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-sm font-medium text-gray-900 mb-4">统计信息</h3>
+        <div className="p-6 border-b border-slate-100">
+          <h3 className="text-sm font-medium text-slate-900 mb-4">统计信息</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">总用户数</span>
-              <span className="text-sm font-medium text-gray-900">{users.length}</span>
+              <span className="text-sm text-slate-600">总用户数</span>
+              <span className="text-sm font-medium text-slate-900">{users.length}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">学生</span>
-              <span className="text-sm font-medium text-gray-900">{users.filter(u => u.role === 'student').length}</span>
+              <span className="text-sm text-slate-600">学生</span>
+              <span className="text-sm font-medium text-slate-900">{users.filter(u => u.role === 'student').length}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">教师</span>
+              <span className="text-sm text-slate-600">教师</span>
               <span className="text-sm font-medium text-gray-900">{users.filter(u => u.role === 'teacher').length}</span>
             </div>
             <div className="flex justify-between items-center">

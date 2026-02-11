@@ -112,16 +112,20 @@ const ExamSystem: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-slate-50 flex">
       {/* Left Sidebar - Controls */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
         {/* Page Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-6 border-b border-slate-100">
           <div className="flex items-center mb-2">
-            <GraduationCap className="w-6 h-6 text-gray-700 mr-3" />
-            <h1 className="text-xl font-semibold text-gray-900">考试与教学中心</h1>
+            <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center mr-3">
+              <GraduationCap className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">考试中心</h1>
+              <p className="text-xs text-slate-500">智能出题与病例生成</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-600">智能出题与病例生成</p>
         </div>
 
         {/* Mode Selection */}

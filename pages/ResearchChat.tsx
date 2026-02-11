@@ -91,26 +91,30 @@ const ResearchChat: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex">
+    <div className="h-screen bg-slate-50 flex">
       {/* Left Sidebar - Controls */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
         {/* Page Header */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="flex items-center mb-2">
-            <MessageSquare className="w-6 h-6 text-gray-700 mr-3" />
-            <h1 className="text-xl font-semibold text-gray-900">学术研究</h1>
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">学术/科研</h1>
+              <p className="text-xs text-slate-500">AI 学术助手与研究方案</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-600">AI 学术助手与研究方案生成</p>
         </div>
 
         {/* Mode Selection */}
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-sm font-medium text-gray-900 mb-4">功能模式</h3>
+        <div className="p-6 border-b border-slate-100">
+          <h3 className="text-sm font-medium text-slate-900 mb-4">功能模式</h3>
           <div className="space-y-2">
             <button 
               onClick={() => setMode('chat')} 
-              className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors flex items-center ${
-                mode === 'chat' ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50'
+              className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors flex items-center font-medium ${
+                mode === 'chat' ? 'bg-emerald-600 text-white' : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
               <MessageSquare className="w-4 h-4 mr-2" />
@@ -118,8 +122,8 @@ const ResearchChat: React.FC = () => {
             </button>
             <button 
               onClick={() => setMode('proposal')} 
-              className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors flex items-center ${
-                mode === 'proposal' ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-50'
+              className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors flex items-center font-medium ${
+                mode === 'proposal' ? 'bg-emerald-600 text-white' : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -131,19 +135,19 @@ const ResearchChat: React.FC = () => {
         {/* Controls */}
         <div className="flex-1 overflow-y-auto">
           {mode === 'proposal' && (
-            <div className="p-6 border-b border-gray-100">
-              <h3 className="text-sm font-medium text-gray-900 mb-4">样本信息</h3>
+            <div className="p-6 border-b border-slate-100">
+              <h3 className="text-sm font-medium text-slate-900 mb-4">样本信息</h3>
               <textarea
                 value={sampleInfo}
                 onChange={(e) => setSampleInfo(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
                 rows={4}
                 placeholder="请输入样本的基本信息，如类型、来源、特征等..."
               />
               <button
                 onClick={handleGenerateProposal}
                 disabled={isLoading || !sampleInfo.trim()}
-                className="w-full mt-3 py-2.5 px-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                className="w-full mt-3 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
               >
                 {isLoading ? (
                   <>
