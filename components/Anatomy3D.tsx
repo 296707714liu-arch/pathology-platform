@@ -40,7 +40,8 @@ const Anatomy3D: React.FC<Anatomy3DProps> = ({ modelUrl, title }) => {
     if (!containerRef.current || !modelUrl) return;
 
     // 通过后端代理加载模型，避免 CORS 问题
-    const proxyUrl = `http://localhost:3007/api/tripo3d/model?url=${encodeURIComponent(modelUrl)}`;
+    const serverBaseUrl = import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3001';
+    const proxyUrl = `${serverBaseUrl}/api/tripo3d/model?url=${encodeURIComponent(modelUrl)}`;
     console.log('[Anatomy3D] Loading model via proxy:', proxyUrl);
     
     setIsLoading(true);

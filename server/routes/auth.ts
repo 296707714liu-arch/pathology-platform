@@ -1,6 +1,7 @@
 import express from 'express';
-import { registerUser, loginUser, getAllUsers, deleteUser, getUserStats, getUserActivities } from '../services/userService.ts';
-import { authenticateToken, requireRole, AuthRequest } from '../middleware/auth.ts';
+import { registerUser, loginUser, getAllUsers, deleteUser, getUserStats, getUserActivities, physicallyDeleteUser } from '../services/userService.ts';
+import { authenticateToken, requireRole } from '../middleware/auth.ts';
+import type { AuthRequest } from '../middleware/auth.ts';
 
 const router = express.Router();
 
@@ -118,6 +119,21 @@ router.delete('/users/:userId', authenticateToken, requireRole(['admin']), async
     }
   } catch (error) {
     console.error('删除用户错误:', error);
+    res.status(500).json({ success: false, error: '服务器内部错误' });
+  }
+});
+
+// 注销当前用户账号（硬删除）
+router.delete('/me', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const success = await physicallyDeleteUser(req.user.id);
+    if (success) {
+      res.json({ success: true, message: '账号已永久注销' });
+    } else {
+      res.status(400).json({ success: false, error: '注销失败' });
+    }
+  } catch (error) {
+    console.error('注销账号错误:', error);
     res.status(500).json({ success: false, error: '服务器内部错误' });
   }
 });

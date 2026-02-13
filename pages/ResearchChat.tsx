@@ -3,8 +3,11 @@ import { Send, Bot, User, BookOpen, Microscope, MessageSquare, FileText, Loader2
 import { streamResearchChat, generateResearchProposal } from '../services/geminiService';
 import { activityAPI } from '../services/apiService';
 import { ChatMessage } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 const ResearchChat: React.FC = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [mode, setMode] = useState<'chat' | 'proposal'>('chat');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {

@@ -132,6 +132,21 @@ const AppContent: React.FC = () => {
     setIsUserMenuOpen(false);
   };
 
+  // 处理注销账号（物理删除）
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('警告：注销账号将永久删除您的所有数据且无法恢复！确定要继续吗？')) {
+      return;
+    }
+    
+    try {
+      await authAPI.deleteMe();
+      alert('您的账号已永久注销。');
+      handleLogout();
+    } catch (error: any) {
+      alert(`注销失败: ${error.message}`);
+    }
+  };
+
   const renderView = () => {
     // 如果正在加载，显示加载界面
     if (authState.isLoading) {
@@ -191,7 +206,91 @@ const AppContent: React.FC = () => {
       </div>
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="lg:hidden bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between sticky top-0 z-20">
+        {/* 顶部导航栏 - 桌面端可见 */}
+        <div className={`hidden lg:flex ${theme === 'dark' ? 'bg-[#0d121f] border-slate-800' : 'bg-white border-gray-200'} px-8 h-16 items-center justify-between sticky top-0 z-20 border-b`}>
+          <div className={`font-semibold ${theme === 'dark' ? 'text-slate-400' : 'text-gray-500'}`}>
+            {currentView === AppView.DASHBOARD && "综合概览"}
+            {currentView === AppView.SLIDE_ANALYSIS && "AI 阅片分析"}
+            {currentView === AppView.ANATOMY && "3D 解剖模拟"}
+            {currentView === AppView.EXAM_SYSTEM && "考评测验中心"}
+            {currentView === AppView.RESEARCH_ASSISTANT && "学术科研助手"}
+            {currentView === AppView.USER_MANAGEMENT && "系统用户管理"}
+            {currentView === AppView.USER_PROFILE && "个人中心"}
+            {currentView === AppView.CHANGE_PASSWORD && "修改账户密码"}
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {/* 主题切换图标按钮 */}
+            <button
+              onClick={() => {
+                console.log('[Theme] Toggle clicked, current:', theme);
+                toggleTheme();
+              }}
+              className={`p-2 ${theme === 'dark' ? 'text-slate-400 hover:bg-slate-800' : 'text-slate-500 hover:bg-slate-100'} rounded-xl transition-all`}
+              title={`切换到${theme === 'dark' ? '浅色' : '深色'}模式`}
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+
+            <div className="relative">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className={`flex items-center gap-2 p-2 ${theme === 'dark' ? 'hover:bg-slate-800' : 'hover:bg-gray-50'} rounded-xl transition-all group`}
+              >
+                <div className={`w-8 h-8 rounded-lg ${theme === 'dark' ? 'bg-slate-800 text-slate-400 border-slate-700' : 'bg-slate-100 text-slate-600 border-slate-200'} flex items-center justify-center border group-hover:border-blue-200 transition-colors`}>
+                  <UserIcon size={18} />
+                </div>
+                <span className={`text-sm font-bold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-700'}`}>{authState.user?.name}</span>
+                <Settings size={16} className={`text-slate-400 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-90' : ''}`} />
+              </button>
+
+              {isUserMenuOpen && (
+                <div className={`absolute right-0 mt-2 w-56 ${theme === 'dark' ? 'bg-[#161d2f] border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)]' : 'bg-white border-gray-100 shadow-2xl'} rounded-2xl border z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200`}>
+                  <div className="p-2 space-y-1">
+                    <button
+                      onClick={() => {
+                        setCurrentView(AppView.USER_PROFILE);
+                        setIsUserMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 text-sm ${theme === 'dark' ? 'text-slate-300 hover:bg-white/5' : 'text-slate-700 hover:bg-blue-50 hover:text-blue-600'} rounded-xl flex items-center gap-3 transition-colors`}
+                    >
+                      <UserIcon size={16} />
+                      <span>个人中心</span>
+                    </button>
+
+                    <button
+                      onClick={handleChangePassword}
+                      className={`w-full text-left px-4 py-2.5 text-sm ${theme === 'dark' ? 'text-slate-300 hover:bg-white/5' : 'text-slate-700 hover:bg-blue-50 hover:text-blue-600'} rounded-xl flex items-center gap-3 transition-colors`}
+                    >
+                      <Settings size={16} />
+                      <span>修改密码</span>
+                    </button>
+
+                    <div className={`h-px ${theme === 'dark' ? 'bg-slate-800' : 'bg-gray-100'} my-1 mx-2`}></div>
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-3 transition-colors"
+                    >
+                      <LogOut size={16} />
+                      <span>退出登录</span>
+                    </button>
+
+                    <button
+                      onClick={handleDeleteAccount}
+                      className={`w-full text-left px-4 py-2.5 text-sm ${theme === 'dark' ? 'text-red-400 hover:bg-red-900/20' : 'text-red-700 hover:bg-red-100'} font-bold rounded-xl flex items-center gap-3 transition-colors`}
+                    >
+                      <UserIcon size={16} className="text-red-400" />
+                      <span>注销账号 (硬删除)</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className={`lg:hidden ${theme === 'dark' ? 'bg-[#0d121f] border-slate-800' : 'bg-white border-gray-200'} border-b px-4 h-16 flex items-center justify-between sticky top-0 z-20`}>
           <div className="font-semibold text-gray-900">PathoLogic AI</div>
           <div className="relative">
             <button 
@@ -204,6 +303,18 @@ const AppContent: React.FC = () => {
             {/* 用户菜单 */}
             {isUserMenuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                {/* 个人中心 */}
+                <button
+                  onClick={() => {
+                    setCurrentView(AppView.USER_PROFILE);
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                >
+                  <UserIcon className="w-4 h-4" />
+                  <span>个人中心</span>
+                </button>
+
                 {/* 修改密码 */}
                 <button
                   onClick={handleChangePassword}
@@ -240,7 +351,7 @@ const AppContent: React.FC = () => {
           </div>
         </div>
 
-        <main className="flex-1 overflow-auto scroll-smooth bg-gray-50 p-0 sm:p-0 md:p-0">
+        <main className={`flex-1 overflow-auto scroll-smooth ${theme === 'dark' ? 'bg-[#0b0f1a]' : 'bg-gray-50'} p-0 sm:p-0 md:p-0`}>
             {renderView()}
           </main>
       </div>

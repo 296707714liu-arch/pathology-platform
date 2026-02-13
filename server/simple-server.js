@@ -13,6 +13,12 @@ const app = express();
 // 使用环境变量端口，Zeabur 会自动分配
 const PORT = process.env.PORT || 3001;
 
+// 确保 JWT_SECRET 存在
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️  警告: JWT_SECRET 未设置，使用默认值（仅用于开发环境）');
+  process.env.JWT_SECRET = 'dev_jwt_secret_key_change_in_production_' + Date.now();
+}
+
 // 中间件
 const corsOptions = {
   origin: function (origin, callback) {
@@ -76,6 +82,14 @@ const upload = multer({
 
 // JWT认证中间件
 const authenticateToken = async (req, res, next) => {
+  // 如果数据库不可用，返回错误
+  if (!pool || shouldSkipDB) {
+    return res.status(503).json({ 
+      error: '数据库不可用，此功能暂时无法使用',
+      message: '请配置数据库连接或设置 DB_SKIP=true 以使用降级模式'
+    });
+  }
+
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -119,10 +133,24 @@ const requireRole = (roles) => {
 };
 
 // 数据库连接池 - 支持 Zeabur 环境变量
-const pool = mysql.createPool({
+// 如果设置了 DB_SKIP=true，则跳过数据库连接
+const shouldSkipDB = process.env.DB_SKIP === 'true' || process.env.SKIP_DB === 'true';
+
+// 处理密码：如果环境变量未设置或为空字符串，使用 undefined（MySQL 会尝试无密码连接）
+const getPassword = () => {
+  const password = process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD;
+  // 如果明确设置为空字符串或未设置，返回 undefined（无密码）
+  // 如果设置为 'null' 或 'none'，也返回 undefined
+  if (!password || password === '' || password === 'null' || password === 'none') {
+    return undefined;
+  }
+  return password;
+};
+
+const pool = shouldSkipDB ? null : mysql.createPool({
   host: process.env.DB_HOST || process.env.MYSQL_HOST || 'localhost',
   user: process.env.DB_USER || process.env.MYSQL_USERNAME || 'root',
-  password: process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD || '',
+  password: getPassword(),
   database: process.env.DB_NAME || process.env.MYSQL_DATABASE || 'pathologic_ai_platform',
   port: parseInt(process.env.DB_PORT || process.env.MYSQL_PORT || '3306'),
   charset: 'utf8mb4',
@@ -134,19 +162,53 @@ const pool = mysql.createPool({
 
 // 测试数据库连接
 async function testConnection() {
+  if (shouldSkipDB) {
+    console.log('ℹ️  数据库连接已跳过 (DB_SKIP=true)');
+    return false;
+  }
+
   try {
+    console.log('📡 尝试连接数据库...');
+    console.log(`   主机: ${process.env.DB_HOST || 'localhost'}`);
+    console.log(`   用户: ${process.env.DB_USER || 'root'}`);
+    console.log(`   数据库: ${process.env.DB_NAME || 'pathologic_ai_platform'}`);
+    console.log(`   端口: ${process.env.DB_PORT || '3306'}`);
+    const hasPassword = getPassword() !== undefined;
+    console.log(`   密码: ${hasPassword ? '***' : '(无密码)'}`);
+    
     const connection = await pool.getConnection();
     console.log('✅ 数据库连接成功');
     connection.release();
     return true;
   } catch (error) {
     console.error('❌ 数据库连接失败:', error.message);
+    
+    // 提供更详细的错误提示
+    if (error.message.includes('Access denied')) {
+      console.log('');
+      console.log('💡 数据库连接提示:');
+      console.log('   1. 如果 MySQL root 用户没有密码，请在 .env 文件中设置:');
+      console.log('      DB_PASSWORD=  (空值)');
+      console.log('   2. 如果 MySQL root 用户有密码，请在 .env 文件中设置:');
+      console.log('      DB_PASSWORD=你的密码');
+      console.log('   3. 如果想跳过数据库连接，设置:');
+      console.log('      DB_SKIP=true');
+      console.log('   4. 或者修改 MySQL root 用户密码:');
+      console.log('      mysql -u root -p');
+      console.log('      ALTER USER \'root\'@\'localhost\' IDENTIFIED BY \'\';');
+      console.log('');
+    }
+    
     return false;
   }
 }
 
 // 初始化数据库表
 async function initializeDatabase() {
+  if (shouldSkipDB || !pool) {
+    return false;
+  }
+
   try {
     const connection = await pool.getConnection();
     

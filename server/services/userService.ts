@@ -2,7 +2,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import pool from '../config/database.ts';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import mysql from 'mysql2';
+const { RowDataPacket, ResultSetHeader } = mysql;
 
 export interface User {
   id: string;
@@ -159,6 +160,28 @@ export const getUserById = async (userId: string): Promise<User | null> => {
   }
 };
 
+// 物理删除用户（注销账号）
+export const physicallyDeleteUser = async (userId: string): Promise<boolean> => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    // 1. 删除关联的活动记录
+    await connection.execute('DELETE FROM user_activities WHERE user_id = ?', [userId]);
+    // 2. 删除关联的考试记录
+    await connection.execute('DELETE FROM exam_records WHERE user_id = ?', [userId]);
+    // 3. 删除用户本人
+    const [result] = await connection.execute<ResultSetHeader>('DELETE FROM users WHERE id = ?', [userId]);
+    await connection.commit();
+    return result.affectedRows > 0;
+  } catch (error) {
+    await connection.rollback();
+    console.error('物理删除用户失败:', error);
+    return false;
+  } finally {
+    connection.release();
+  }
+};
+
 // 获取所有用户（管理员功能）
 export const getAllUsers = async (): Promise<User[]> => {
   const connection = await pool.getConnection();
@@ -206,10 +229,14 @@ export const logUserActivity = async (
   const connection = await pool.getConnection();
   
   try {
+    const activityId = uuidv4();
+    const safeDuration = typeof durationSeconds === 'number' && !isNaN(durationSeconds) ? Math.floor(durationSeconds) : 0;
+    
     await connection.execute<ResultSetHeader>(
-      'INSERT INTO user_activities (user_id, activity_type, module_name, details, duration_seconds) VALUES (?, ?, ?, ?, ?)',
-      [userId, activityType, moduleName || null, JSON.stringify(details || {}), durationSeconds || 0]
+      'INSERT INTO user_activities (id, user_id, activity_type, module_name, details, duration_seconds) VALUES (?, ?, ?, ?, ?, ?)',
+      [activityId, userId, activityType, moduleName || null, JSON.stringify(details || {}), safeDuration]
     );
+    console.log(`✅ 活动记录已写入: 用户 ${userId}, 类型 ${activityType}, 模块 ${moduleName}`);
   } catch (error) {
     console.error('记录用户活动失败:', error);
   } finally {
@@ -222,9 +249,10 @@ export const getUserActivities = async (userId: string, limit: number = 50): Pro
   const connection = await pool.getConnection();
   
   try {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 50;
     const [activities] = await connection.execute<RowDataPacket[]>(
-      'SELECT * FROM user_activities WHERE user_id = ? ORDER BY created_at DESC LIMIT ?',
-      [userId, limit]
+      `SELECT * FROM user_activities WHERE user_id = ? ORDER BY created_at DESC LIMIT ${safeLimit}`,
+      [userId]
     );
 
     return activities;
@@ -246,7 +274,7 @@ export const getUserStats = async (userId: string): Promise<any> => {
       `SELECT 
         activity_type,
         COUNT(*) as count,
-        SUM(duration_seconds) as total_duration
+        IFNULL(SUM(duration_seconds), 0) as total_duration
        FROM user_activities 
        WHERE user_id = ? 
        GROUP BY activity_type`,
@@ -257,9 +285,9 @@ export const getUserStats = async (userId: string): Promise<any> => {
     const [examStats] = await connection.execute<RowDataPacket[]>(
       `SELECT 
         COUNT(*) as total_exams,
-        AVG(score) as avg_score,
-        MAX(score) as best_score,
-        SUM(duration_minutes) as total_study_time
+        IFNULL(AVG(score), 0) as avg_score,
+        IFNULL(MAX(score), 0) as best_score,
+        IFNULL(SUM(duration_minutes), 0) as total_study_time
        FROM exam_records 
        WHERE user_id = ?`,
       [userId]

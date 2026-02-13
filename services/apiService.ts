@@ -1,6 +1,6 @@
 import { User, LoginCredentials, RegisterData, UserStats, UserActivity, Resource, CreateResourceData, ExamRecord } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pathology-backend-api.zeabur.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 // 添加全局 fetch 拦截
 const originalFetch = window.fetch;
@@ -126,6 +126,16 @@ export const authAPI = {
     await handleResponse(response);
   },
 
+  // 注销当前账号（删除自己）
+  deleteMe: async (): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+
+    await handleResponse(response);
+  },
+
   // 登出
   logout: () => {
     localStorage.removeItem('auth_token');
@@ -136,25 +146,46 @@ export const authAPI = {
 export const resourceAPI = {
   // 上传资源
   uploadResource: async (file: File, resourceData: CreateResourceData): Promise<Resource> => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('title', resourceData.title);
-    if (resourceData.description) formData.append('description', resourceData.description);
-    formData.append('type', resourceData.type);
-    if (resourceData.tags) formData.append('tags', JSON.stringify(resourceData.tags));
-    formData.append('is_public', String(resourceData.is_public !== false));
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('title', resourceData.title);
+      if (resourceData.description) formData.append('description', resourceData.description);
+      formData.append('type', resourceData.type);
+      if (resourceData.tags) formData.append('tags', JSON.stringify(resourceData.tags));
+      formData.append('is_public', String(resourceData.is_public !== false));
 
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(`${API_BASE_URL}/resources/upload`, {
-      method: 'POST',
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      },
-      body: formData
-    });
-    
-    const data = await handleResponse(response);
-    return data.resource;
+      console.log('📤 上传资源:', {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        title: resourceData.title,
+        type: resourceData.type
+      });
+
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(`${API_BASE_URL}/resources/upload`, {
+        method: 'POST',
+        headers: {
+          ...(token && { 'Authorization': `Bearer ${token}` })
+          // 注意：不要设置 Content-Type，让浏览器自动设置为 multipart/form-data
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: '上传失败' }));
+        console.error('❌ 上传失败:', response.status, errorData);
+        throw new Error(errorData.error || `上传失败: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ 上传成功:', data);
+      return data.resource;
+    } catch (error) {
+      console.error('❌ 上传错误:', error);
+      throw error;
+    }
   },
 
   // 获取资源列表
@@ -219,6 +250,16 @@ export const resourceAPI = {
   // 删除资源
   deleteResource: async (id: string): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}/resources/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    
+    await handleResponse(response);
+  },
+
+  // 一键清空所有资源 (管理员/教师专用)
+  purgeAllResources: async (): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/resources/admin/purge-all`, {
       method: 'DELETE',
       headers: getAuthHeaders()
     });

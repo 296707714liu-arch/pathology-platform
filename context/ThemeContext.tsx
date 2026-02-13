@@ -1,11 +1,12 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
 // 定义主题类型
-type Theme = 'default' | 'colorful';
+type Theme = 'default' | 'colorful' | 'dark';
 
 // 定义上下文类型
 interface ThemeContextType {
   theme: Theme;
+  setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
   getThemeLabel: () => string;
 }
@@ -19,30 +20,35 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  // 从localStorage获取主题，默认为default
+  // 从localStorage获取主题，默认为 default (白色主题)
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('theme');
-    return (savedTheme as Theme) || 'default';
+    if (savedTheme === 'dark' || savedTheme === 'colorful' || savedTheme === 'default') {
+      return savedTheme as Theme;
+    }
+    return 'default'; // 显式默认白色
   });
 
   // 获取主题的中文标签
   const getThemeLabel = (): string => {
-    return theme === 'colorful' ? '色彩丰富' : '默认主题';
+    return theme === 'dark' ? '深色模式' : '浅色模式';
   };
 
-  // 切换主题函数
+  // 切换主题函数 (简化为两态切换，确保点击即生效)
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'default' ? 'colorful' : 'default');
+    setTheme(prevTheme => prevTheme === 'dark' ? 'default' : 'dark');
   };
 
-  // 当主题变化时，更新localStorage和HTML根元素的data-theme属性
+  // 当主题变化时，同步更新 localStorage 和 DOM 属性
   useEffect(() => {
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme); // 同时在 body 上挂载，确保覆盖更稳
+    console.log('[Theme] Current theme:', theme);
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, getThemeLabel }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme, getThemeLabel }}>
       {children}
     </ThemeContext.Provider>
   );

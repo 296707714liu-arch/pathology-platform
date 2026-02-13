@@ -4,10 +4,9 @@
  * 通过中转站 API 调用
  */
 
-import { TRIPO3D_API_CONFIG } from '../config/api';
-
-// 后端代理地址
-const TRIPO_BASE_URL = 'http://localhost:3007/api/tripo3d';
+// 后端代理地址（优先使用环境变量，避免端口不一致导致无法访问）
+const SERVER_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:3001';
+const TRIPO_BASE_URL = `${SERVER_BASE_URL}/api/tripo3d`;
 
 export interface TripoTaskResult {
   task_id: string;

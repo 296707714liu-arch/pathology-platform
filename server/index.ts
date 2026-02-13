@@ -13,7 +13,7 @@ dotenv.config();
 
 const app = express();
 // 使用环境变量端口，Zeabur 会自动分配
-const PORT = parseInt(process.env.PORT || '3007', 10);
+const PORT = parseInt(process.env.PORT || '3001', 10);
 
 // 中间件
 // CORS 配置：支持本地开发和 Zeabur 部署

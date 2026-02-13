@@ -1,5 +1,7 @@
 import pool from '../config/database.ts';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import mysql from 'mysql2';
+import { v4 as uuidv4 } from 'uuid';
+const { RowDataPacket, ResultSetHeader } = mysql;
 import { logUserActivity } from './userService.ts';
 
 export interface ExamRecord {
@@ -31,10 +33,12 @@ export const saveExamRecord = async (examData: CreateExamRecordData): Promise<{ 
   const connection = await pool.getConnection();
   
   try {
+    const recordId = uuidv4();
     const [result] = await connection.execute<ResultSetHeader>(
-      `INSERT INTO exam_records (user_id, exam_title, score, total_score, duration_minutes, questions_data, answers_data, wrong_questions) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO exam_records (id, user_id, exam_title, score, total_score, duration_minutes, questions_data, answers_data, wrong_questions) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
+        recordId,
         examData.user_id,
         examData.exam_title,
         examData.score,
@@ -57,13 +61,27 @@ export const saveExamRecord = async (examData: CreateExamRecordData): Promise<{ 
     // 获取保存的记录
     const [records] = await connection.execute<RowDataPacket[]>(
       'SELECT * FROM exam_records WHERE id = ?',
-      [result.insertId]
+      [recordId]
     );
 
     const record = records[0] as ExamRecord;
-    record.questions_data = JSON.parse(record.questions_data as any);
-    record.answers_data = JSON.parse(record.answers_data as any);
-    record.wrong_questions = JSON.parse(record.wrong_questions as any);
+
+    const safeParse = (val: any) => {
+      if (val === null || val === undefined) return null;
+      if (typeof val === 'object') return val;
+      if (typeof val !== 'string') return val;
+      const trimmed = val.trim();
+      if (!trimmed) return null;
+      try {
+        return JSON.parse(trimmed);
+      } catch (e) {
+        return val;
+      }
+    };
+
+    record.questions_data = safeParse((record as any).questions_data);
+    record.answers_data = safeParse((record as any).answers_data);
+    record.wrong_questions = safeParse((record as any).wrong_questions);
 
     return { success: true, record };
   } catch (error) {
@@ -79,16 +97,30 @@ export const getUserExamRecords = async (userId: string, limit: number = 20): Pr
   const connection = await pool.getConnection();
   
   try {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 20;
     const [records] = await connection.execute<RowDataPacket[]>(
-      'SELECT * FROM exam_records WHERE user_id = ? ORDER BY created_at DESC LIMIT ?',
-      [userId, limit]
+      `SELECT * FROM exam_records WHERE user_id = ? ORDER BY created_at DESC LIMIT ${safeLimit}`,
+      [userId]
     );
+
+    const safeParse = (val: any) => {
+      if (val === null || val === undefined) return null;
+      if (typeof val === 'object') return val;
+      if (typeof val !== 'string') return val;
+      const trimmed = val.trim();
+      if (!trimmed) return null;
+      try {
+        return JSON.parse(trimmed);
+      } catch (e) {
+        return val;
+      }
+    };
 
     return records.map(record => ({
       ...record,
-      questions_data: JSON.parse(record.questions_data as any),
-      answers_data: JSON.parse(record.answers_data as any),
-      wrong_questions: JSON.parse(record.wrong_questions as any)
+      questions_data: safeParse((record as any).questions_data),
+      answers_data: safeParse((record as any).answers_data),
+      wrong_questions: safeParse((record as any).wrong_questions)
     })) as ExamRecord[];
   } catch (error) {
     console.error('获取用户考试记录失败:', error);

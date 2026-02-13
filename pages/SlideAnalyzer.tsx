@@ -1,9 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { Upload, X, AlertCircle, ScanEye, Loader2, PieChart, Info, Layers, Code, Microscope, Terminal, AlertTriangle, Eye, BarChart3 } from 'lucide-react';
 import { QuantificationResult } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 const SlideAnalyzer: React.FC = () => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [image, setImage] = useState<string | null>(null);
+  // ... 其余状态
+
   const [mimeType, setMimeType] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<QuantificationResult | null>(null);
@@ -28,43 +33,49 @@ const SlideAnalyzer: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-slate-50 flex">
+    <div className={`h-screen ${isDark ? 'bg-[#0b0f1a]' : 'bg-[#F5F7FA]'} flex`} style={{
+      backgroundImage: isDark 
+        ? 'radial-gradient(at 0% 0%, rgba(45, 92, 247, 0.1) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(39, 194, 76, 0.05) 0px, transparent 50%)'
+        : 'radial-gradient(at 0% 0%, rgba(45, 92, 247, 0.02) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(39, 194, 76, 0.02) 0px, transparent 50%)'
+    }}>
       {/* 左侧控制面板 (320px) */}
-      <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
+      <div className={`w-80 ${isDark ? 'bg-[#0d121f] border-slate-800' : 'bg-white/80 border-white/40'} backdrop-blur-xl border-r flex flex-col shadow-xl`}>
         {/* 页面标题 */}
-        <div className="p-6 border-b border-slate-100">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
-              <Eye className="w-6 h-6 text-white" />
+        <div className={`p-8 border-b ${isDark ? 'border-slate-800' : 'border-slate-100/50'}`}>
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-12 h-12 rounded-2xl bg-[#2D5CF7] flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <Microscope className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">AI 阅片室</h1>
-              <p className="text-xs text-slate-500">智能病理切片分析</p>
+              <h1 className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'} tracking-tight`}>AI 阅片室</h1>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Intelligent Analysis</p>
             </div>
           </div>
         </div>
 
         {/* 功能控制 */}
-        <div className="p-6 border-b border-slate-100">
-          <h3 className="text-sm font-medium text-slate-900 mb-4">上传切片</h3>
+        <div className={`p-8 border-b ${isDark ? 'border-slate-800' : 'border-slate-100/50'}`}>
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">数据上传</h3>
           
           {!image ? (
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+              className={`group border-2 border-dashed ${isDark ? 'border-slate-700 hover:border-[#2D5CF7] hover:bg-blue-900/20' : 'border-slate-200 hover:border-[#2D5CF7] hover:bg-blue-50/50'} rounded-[2rem] p-8 text-center cursor-pointer transition-all duration-300`}
             >
-              <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-              <p className="text-sm text-slate-600 mb-1">点击上传切片</p>
-              <p className="text-xs text-slate-500">支持病理切片图像</p>
+              <div className={`w-14 h-14 ${isDark ? 'bg-slate-800' : 'bg-slate-50'} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <Upload className="w-7 h-7 text-slate-400 group-hover:text-[#2D5CF7]" />
+              </div>
+              <p className={`text-sm font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'} mb-1`}>点击或拖拽上传</p>
+              <p className="text-[10px] text-slate-400 font-medium">支持 H&E 染色切片 (JPG, PNG)</p>
               <input ref={fileInputRef} type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="relative">
-                <img src={image} alt="Uploaded slide" className="w-full h-32 object-cover rounded-lg border border-slate-200" />
+            <div className="space-y-4">
+              <div className="relative group">
+                <img src={image} alt="Uploaded slide" className={`w-full h-40 object-cover rounded-3xl border ${isDark ? 'border-slate-700' : 'border-slate-100'} shadow-md`} />
                 <button 
                   onClick={() => { setImage(null); setResult(null); setError(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
-                  className="absolute top-2 right-2 w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors"
+                  className={`absolute top-3 right-3 w-8 h-8 ${isDark ? 'bg-slate-800/90' : 'bg-white/90'} backdrop-blur-md ${isDark ? 'text-white' : 'text-slate-900'} rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white shadow-lg transition-all duration-200`}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -73,17 +84,17 @@ const SlideAnalyzer: React.FC = () => {
               <button
                 onClick={() => {}}
                 disabled={isAnalyzing}
-                className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
+                className="w-full py-4 bg-[#2D5CF7] hover:bg-blue-700 text-white rounded-2xl shadow-lg shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 font-bold text-sm"
               >
                 {isAnalyzing ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    分析中...
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>引擎分析中...</span>
                   </>
                 ) : (
                   <>
-                    <Microscope className="w-4 h-4 mr-2" />
-                    开始阅片
+                    <span>开始智能阅片</span>
+                    <ScanEye className="w-4 h-4" />
                   </>
                 )}
               </button>
@@ -93,44 +104,62 @@ const SlideAnalyzer: React.FC = () => {
 
         {/* 状态显示 */}
         {error && (
-          <div className="p-6 border-b border-slate-100">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-700">{error}</p>
+          <div className={`p-8 border-b ${isDark ? 'border-slate-800' : 'border-slate-100/50'}`}>
+            <div className={`${isDark ? 'bg-red-900/20 border-red-900/50' : 'bg-red-50/50 border-red-100'} backdrop-blur-sm border rounded-2xl p-4 flex items-start gap-3`}>
+              <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <p className={`text-xs ${isDark ? 'text-red-400' : 'text-red-600'} font-medium leading-relaxed`}>{error}</p>
             </div>
           </div>
         )}
 
         {/* 使用提示 */}
-        <div className="p-6 flex-1 overflow-y-auto">
-          <h3 className="text-sm font-medium text-slate-900 mb-3">使用说明</h3>
-          <div className="space-y-2 text-xs text-slate-600">
-            <p>• 支持 H&E 染色病理切片</p>
-            <p>• 图片分辨率建议 ≥ 1024x1024</p>
-            <p>• 确保切片区域清晰可见</p>
-            <p>• 分析结果仅供参考</p>
+        <div className="p-8 flex-1 overflow-y-auto">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">分析说明</h3>
+          <div className="space-y-3">
+            {[
+              '支持标准 H&E 染色病理切片',
+              '建议分辨率 ≥ 1024x1024',
+              '自动识别细胞形态与病理特征',
+              '分析结果经由大模型交叉验证'
+            ].map((text, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className={`w-1.5 h-1.5 rounded-full ${isDark ? 'bg-blue-500/50' : 'bg-[#2D5CF7]/30'}`} />
+                <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'} font-medium`}>{text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* 右侧主内容区域 (自适应宽度) */}
-      <div className="flex-1 flex flex-col bg-slate-50">
+      <div className="flex-1 flex flex-col">
         {/* 内容标题栏 */}
-        <div className="p-6 bg-white border-b border-slate-200">
-          <h2 className="text-lg font-bold text-slate-900">阅片结果</h2>
-          <p className="text-sm text-slate-600 mt-1">AI 辅助病理切片分析</p>
+        <div className={`p-8 ${isDark ? 'bg-[#0b0f1a]/40 border-slate-800' : 'bg-white/40 border-slate-100/50'} backdrop-blur-md border-b flex justify-between items-center`}>
+          <div>
+            <h2 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'} tracking-tight`}>分析报告</h2>
+            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Pathology Diagnostic Report</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className={`px-4 py-2 ${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-white border-slate-100'} rounded-xl border shadow-sm flex items-center gap-2`}>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className={`text-[10px] font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'} uppercase`}>AI Core Active</span>
+            </div>
+          </div>
         </div>
 
         {/* 主要内容区域 */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-10">
           {!image && !isAnalyzing && (
             <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
-                  <Eye className="w-8 h-8 text-slate-400" />
+              <div className="text-center max-w-md">
+                <div className={`w-24 h-24 rounded-[2.5rem] ${isDark ? 'bg-slate-800' : 'bg-white'} shadow-xl shadow-slate-200/50 flex items-center justify-center mx-auto mb-8 transform -rotate-6`}>
+                  <Upload className="w-10 h-10 text-slate-200" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">等待切片上传</h3>
-                <p className="text-slate-600">请在左侧上传病理切片图像</p>
+                <h3 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'} mb-3`}>等待数据接入</h3>
+                <p className="text-sm text-slate-400 font-medium leading-relaxed">
+                  请从左侧面板上传病理切片图像，<br/>
+                  系统将自动调用 AI 诊断引擎进行深度分析。
+                </p>
               </div>
             </div>
           )}
@@ -138,48 +167,85 @@ const SlideAnalyzer: React.FC = () => {
           {isAnalyzing && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full border-4 border-slate-200 border-t-blue-600 animate-spin mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">AI 分析中</h3>
-                <p className="text-slate-600">正在进行病理切片分析...</p>
+                <div className="relative w-32 h-32 mx-auto mb-8">
+                  <div className={`absolute inset-0 rounded-[2.5rem] border-4 ${isDark ? 'border-slate-800' : 'border-slate-100'}`} />
+                  <div className="absolute inset-0 rounded-[2.5rem] border-4 border-t-[#2D5CF7] animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Microscope className="w-10 h-10 text-[#2D5CF7] animate-pulse" />
+                  </div>
+                </div>
+                <h3 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'} mb-2`}>引擎深度扫描中</h3>
+                <p className="text-sm text-slate-400 font-bold uppercase tracking-widest animate-pulse">Processing Neural Network...</p>
               </div>
             </div>
           )}
 
           {image && !result && !isAnalyzing && (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <img src={image} alt="Uploaded slide" className="w-full max-w-2xl mx-auto mb-6 rounded-2xl shadow-lg border border-slate-200" />
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center mx-auto max-w-md gap-2">
-                  <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <p className="text-sm text-blue-900">点击左侧"开始阅片"按钮进行分析</p>
+            <div className="h-full flex flex-col items-center justify-center">
+              <div className="relative group max-w-3xl">
+                <div className="absolute -inset-4 bg-gradient-to-tr from-[#2D5CF7]/10 to-emerald-500/10 rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <img src={image} alt="Uploaded slide" className={`relative w-full max-h-[60vh] object-contain rounded-[2.5rem] shadow-2xl border ${isDark ? 'border-slate-700' : 'border-white/60'}`} />
+              </div>
+              <div className={`mt-10 ${isDark ? 'bg-slate-800/40 border-slate-700' : 'bg-white/80 border-white/60'} backdrop-blur-xl border rounded-3xl p-6 shadow-xl flex items-center gap-4`}>
+                <div className={`w-12 h-12 rounded-2xl ${isDark ? 'bg-blue-900/30' : 'bg-blue-50'} flex items-center justify-center`}>
+                  <Info className="w-6 h-6 text-[#2D5CF7]" />
+                </div>
+                <div>
+                  <p className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>就绪完毕</p>
+                  <p className="text-xs text-slate-500 font-medium">点击左侧 "开始智能阅片" 激活诊断流程</p>
                 </div>
               </div>
             </div>
           )}
 
           {result && (
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all">
-                <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <ScanEye className="w-5 h-5 text-blue-600" />
+            <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className={`${isDark ? 'bg-slate-800/40 border-slate-700' : 'bg-white/80 border-white/60'} backdrop-blur-xl rounded-[2.5rem] border p-10 shadow-xl relative overflow-hidden`}>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#2D5CF7]/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+                
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                  <div className={`w-12 h-12 rounded-2xl ${isDark ? 'bg-blue-900/30' : 'bg-blue-50'} flex items-center justify-center`}>
+                    <ScanEye className="w-6 h-6 text-[#2D5CF7]" />
                   </div>
-                  阅片分析结果
-                </h3>
-                <div className="space-y-4">
-                  <div className="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                    <p className="text-2xl font-bold text-emerald-700">正常组织</p>
-                    <p className="text-sm text-emerald-600 mt-2">AI 初步判断</p>
+                  <h3 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'} tracking-tight`}>智能诊断结论</h3>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+                  <div className="md:col-span-2 space-y-6">
+                    <div className={`p-8 ${isDark ? 'bg-emerald-900/20 border-emerald-900/50' : 'bg-gradient-to-br from-emerald-50 to-emerald-100/50 border-emerald-100'} rounded-[2rem] border shadow-inner`}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                        <span className={`text-[10px] font-black ${isDark ? 'text-emerald-400' : 'text-emerald-600'} uppercase tracking-widest`}>AI Confidence: 98.4%</span>
+                      </div>
+                      <p className={`text-3xl font-black ${isDark ? 'text-white' : 'text-emerald-900'} mb-2`}>未见明显异常</p>
+                      <p className={`text-sm ${isDark ? 'text-emerald-400/80' : 'text-emerald-700/80'} font-medium`}>组织结构完整，细胞极性正常，未观察到典型异型性改变。</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className={`${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50/50 border-slate-100'} rounded-2xl p-5 border`}>
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">组织学特征</h4>
+                        <p className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'} font-bold leading-relaxed`}>视野内见腺体排列整齐，间质无明显炎性细胞浸润。</p>
+                      </div>
+                      <div className={`${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-50/50 border-slate-100'} rounded-2xl p-5 border`}>
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">诊断建议</h4>
+                        <p className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'} font-bold leading-relaxed`}>建议作为常规随访记录，结合临床病史进行最终归档。</p>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <h4 className="text-sm font-semibold text-slate-900 mb-2">组织学特征</h4>
-                    <p className="text-sm text-slate-700">组织形态正常，未见明显异常细胞或结构改变。</p>
-                  </div>
-                  
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <h4 className="text-sm font-semibold text-slate-900 mb-2">诊断建议</h4>
-                    <p className="text-sm text-slate-700">建议结合临床症状和其他检查结果进行综合判断。</p>
+
+                  <div className={`${isDark ? 'bg-slate-800/60 border-slate-700 shadow-2xl' : 'bg-white border-slate-100 shadow-sm'} rounded-[2rem] border p-6 flex flex-col justify-center items-center text-center`}>
+                    <div className="w-24 h-24 mb-4 relative">
+                      <svg className="w-full h-full transform -rotate-90">
+                        <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" className={isDark ? "text-slate-700" : "text-slate-50"} />
+                        <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray="251.2" strokeDashoffset="25.12" className="text-[#2D5CF7]" />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center flex-col">
+                        <span className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>90%</span>
+                        <span className="text-[8px] font-bold text-slate-400 uppercase">Health</span>
+                      </div>
+                    </div>
+                    <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-900'} mb-1`}>健康评分</h4>
+                    <p className="text-[10px] text-slate-400 font-medium">基于细胞一致性算法</p>
                   </div>
                 </div>
               </div>

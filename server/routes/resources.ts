@@ -11,7 +11,8 @@ import {
   getUserResources,
   getResourceStats 
 } from '../services/resourceService.ts';
-import { authenticateToken, requireRole, AuthRequest } from '../middleware/auth.ts';
+import { authenticateToken, requireRole } from '../middleware/auth.ts';
+import type { AuthRequest } from '../middleware/auth.ts';
 
 const router = express.Router();
 
@@ -71,6 +72,16 @@ router.post('/upload', authenticateToken, requireRole(['teacher', 'admin']), upl
       return res.status(400).json({ success: false, error: '标题和类型是必填项' });
     }
 
+    let parsedTags = [];
+    if (tags) {
+      try {
+        parsedTags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      } catch (e) {
+        console.warn('解析 tags 失败:', e);
+        parsedTags = [];
+      }
+    }
+
     const resourceData = {
       title,
       description,
@@ -80,7 +91,7 @@ router.post('/upload', authenticateToken, requireRole(['teacher', 'admin']), upl
       file_size: req.file.size,
       mime_type: req.file.mimetype,
       uploader_id: req.user.id,
-      tags: tags ? JSON.parse(tags) : [],
+      tags: parsedTags,
       is_public: is_public !== 'false'
     };
 
@@ -199,6 +210,46 @@ router.delete('/:id', authenticateToken, async (req: AuthRequest, res) => {
   } catch (error) {
     console.error('删除资源错误:', error);
     res.status(500).json({ success: false, error: '服务器内部错误' });
+  }
+});
+
+// 管理员/教师一键清空所有资源 (临时放宽权限以方便清理)
+router.delete('/admin/purge-all', authenticateToken, async (req: AuthRequest, res) => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // 1. 获取所有文件路径以便物理删除
+    const [resources] = await connection.execute<RowDataPacket[]>(
+      'SELECT file_path FROM resources'
+    );
+
+    // 2. 清空下载记录表
+    await connection.execute('DELETE FROM resource_downloads');
+
+    // 3. 清空资源表
+    await connection.execute('DELETE FROM resources');
+
+    await connection.commit();
+
+    // 4. 物理删除文件
+    resources.forEach(resource => {
+      try {
+        if (resource.file_path && fs.existsSync(resource.file_path)) {
+          fs.unlinkSync(resource.file_path);
+        }
+      } catch (err) {
+        console.error(`物理删除文件失败: ${resource.file_path}`, err);
+      }
+    });
+
+    res.json({ success: true, message: '所有资源及物理文件已成功清空' });
+  } catch (error) {
+    await connection.rollback();
+    console.error('清空所有资源失败:', error);
+    res.status(500).json({ success: false, error: '清空操作失败' });
+  } finally {
+    connection.release();
   }
 });
 

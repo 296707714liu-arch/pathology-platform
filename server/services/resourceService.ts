@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import pool from '../config/database.ts';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import mysql from 'mysql2';
+const { RowDataPacket, ResultSetHeader } = mysql;
 import { logUserActivity } from './userService.ts';
 
 export interface Resource {
@@ -69,7 +70,11 @@ export const createResource = async (resourceData: CreateResourceData): Promise<
     );
 
     const resource = resources[0] as Resource;
-    resource.tags = JSON.parse(resource.tags as any) || [];
+    try {
+      resource.tags = typeof resource.tags === 'string' ? JSON.parse(resource.tags) : (resource.tags || []);
+    } catch (e) {
+      resource.tags = [];
+    }
 
     // 记录上传活动
     await logUserActivity(resourceData.uploader_id, 'resource_upload', 'collaborative_library', {
@@ -80,8 +85,11 @@ export const createResource = async (resourceData: CreateResourceData): Promise<
 
     return { success: true, resource };
   } catch (error) {
-    console.error('创建资源失败:', error);
-    return { success: false, error: '上传失败，请稍后重试' };
+    console.error('创建资源失败 (DB Error):', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? `数据库错误: ${error.message}` : '上传失败，请稍后重试' 
+    };
   } finally {
     connection.release();
   }
@@ -121,25 +129,37 @@ export const getResources = async (
       `SELECT COUNT(*) as total FROM resources r ${whereClause}`,
       params
     );
-    const total = countResult[0].total;
+    const total = countResult[0]?.total || 0;
 
     // 获取资源列表
-    const offset = (page - 1) * limit;
+    // 某些 MySQL/MariaDB 版本对预处理语句的 LIMIT/OFFSET 参数非常挑剔，容易触发 ER_WRONG_ARGUMENTS。
+    // 这里将 safeLimit/safeOffset 作为“已净化整数”直接拼接进 SQL，避免驱动/数据库层面的问题。
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 20;
+    const safeOffset = Number.isFinite(page) ? Math.max(0, (Math.floor(page) - 1) * safeLimit) : 0;
     const [resources] = await connection.execute<RowDataPacket[]>(
       `SELECT r.*, u.name as uploader_name 
        FROM resources r 
        LEFT JOIN users u ON r.uploader_id = u.id 
        ${whereClause}
        ORDER BY r.created_at DESC 
-       LIMIT ? OFFSET ?`,
-      [...params, limit, offset]
+       LIMIT ${safeLimit} OFFSET ${safeOffset}`,
+      params
     );
 
     // 解析tags JSON
-    const resourcesWithTags = resources.map(resource => ({
-      ...resource,
-      tags: JSON.parse(resource.tags as any) || []
-    })) as Resource[];
+    const resourcesWithTags = resources.map(resource => {
+      let parsedTags: any[] = [];
+      try {
+        parsedTags = typeof (resource as any).tags === 'string' ? JSON.parse((resource as any).tags) : ((resource as any).tags || []);
+      } catch (e) {
+        parsedTags = [];
+      }
+
+      return {
+        ...resource,
+        tags: parsedTags
+      };
+    }) as Resource[];
 
     const totalPages = Math.ceil(total / limit);
 
@@ -170,7 +190,11 @@ export const getResourceById = async (resourceId: string): Promise<Resource | nu
     }
 
     const resource = resources[0] as Resource;
-    resource.tags = JSON.parse(resource.tags as any) || [];
+    try {
+      resource.tags = typeof (resource as any).tags === 'string' ? JSON.parse((resource as any).tags) : ((resource as any).tags || []);
+    } catch (e) {
+      resource.tags = [];
+    }
 
     return resource;
   } catch (error) {
@@ -243,14 +267,14 @@ export const deleteResource = async (resourceId: string, userId: string): Promis
 
     const resource = resources[0];
     
-    // 检查权限（只有上传者或管理员可以删除）
+    // 检查权限（只有上传者、老师或管理员可以删除）
     const [users] = await connection.execute<RowDataPacket[]>(
       'SELECT role FROM users WHERE id = ?',
       [userId]
     );
 
     const user = users[0];
-    if (resource.uploader_id !== userId && user.role !== 'admin') {
+    if (resource.uploader_id !== userId && user.role !== 'admin' && user.role !== 'teacher') {
       return { success: false, error: '没有权限删除此资源' };
     }
 
