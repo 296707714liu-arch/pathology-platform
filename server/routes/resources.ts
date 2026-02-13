@@ -10,9 +10,9 @@ import {
   deleteResource, 
   getUserResources,
   getResourceStats 
-} from '../services/resourceService.ts';
-import { authenticateToken, requireRole } from '../middleware/auth.ts';
-import type { AuthRequest } from '../middleware/auth.ts';
+} from '../services/resourceService';
+import { authenticateToken, requireRole } from '../middleware/auth';
+import type { AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 

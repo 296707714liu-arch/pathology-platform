@@ -1,7 +1,7 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.ts';
-import { logUserActivity } from '../services/userService.ts';
-import type { AuthRequest } from '../middleware/auth.ts';
+import { authenticateToken } from '../middleware/auth';
+import { logUserActivity } from '../services/userService';
+import type { AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 

@@ -1,9 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
-import pool from '../config/database.ts';
-import mysql from 'mysql2';
-const { RowDataPacket, ResultSetHeader } = mysql;
+import pool from '../config/database';
+import mysql, { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 export interface User {
   id: string;
@@ -33,8 +32,9 @@ export interface RegisterData {
 
 // 生成JWT令牌
 const generateToken = (userId: string): string => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+  const secret = process.env.JWT_SECRET || 'fallback_secret';
+  return jwt.sign({ userId }, secret, {
+    expiresIn: (process.env.JWT_EXPIRES_IN as any) || '7d'
   });
 };
 

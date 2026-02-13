@@ -1,7 +1,7 @@
 import express from 'express';
-import { saveExamRecord, getUserExamRecords, getExamStats } from '../services/examService.ts';
-import { authenticateToken } from '../middleware/auth.ts';
-import type { AuthRequest } from '../middleware/auth.ts';
+import { saveExamRecord, getUserExamRecords, getExamStats } from '../services/examService';
+import { authenticateToken } from '../middleware/auth';
+import type { AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 

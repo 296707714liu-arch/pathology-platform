@@ -1,8 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import pool from '../config/database.ts';
-import mysql from 'mysql2';
-const { RowDataPacket, ResultSetHeader } = mysql;
-import { logUserActivity } from './userService.ts';
+import pool from '../config/database';
+import mysql, { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import { logUserActivity } from './userService';
 
 export interface Resource {
   id: string;

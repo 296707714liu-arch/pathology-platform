@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import { testConnection, initializeDatabase } from './config/database.ts';
-import authRoutes from './routes/auth.ts';
-import resourceRoutes from './routes/resources.ts';
-import examRoutes from './routes/exams.ts';
+import { testConnection, initializeDatabase } from './config/database';
+import authRoutes from './routes/auth';
+import resourceRoutes from './routes/resources';
+import examRoutes from './routes/exams';
 
 const __dirname = path.resolve();
 

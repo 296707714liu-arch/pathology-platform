@@ -1,7 +1,7 @@
 import express from 'express';
-import { registerUser, loginUser, getAllUsers, deleteUser, getUserStats, getUserActivities, physicallyDeleteUser } from '../services/userService.ts';
-import { authenticateToken, requireRole } from '../middleware/auth.ts';
-import type { AuthRequest } from '../middleware/auth.ts';
+import { registerUser, loginUser, getAllUsers, deleteUser, getUserStats, getUserActivities, physicallyDeleteUser } from '../services/userService';
+import { authenticateToken, requireRole } from '../middleware/auth';
+import type { AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 

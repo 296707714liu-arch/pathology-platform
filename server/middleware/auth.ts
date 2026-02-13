@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { verifyToken, getUserById } from '../services/userService.ts';
+import { verifyToken, getUserById } from '../services/userService';
 
 export interface AuthRequest extends Request {
   user?: any;
